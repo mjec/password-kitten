@@ -1,0 +1,36 @@
+diff --git a/keyring/backend.py b/keyring/backend.py
+index f9dc1bc..e538d67 100644
+--- a/keyring/backend.py
++++ b/keyring/backend.py
+@@ -8,7 +8,7 @@ import abc
+ import logging
+ import operator
+ 
+-import entrypoints
++from importlib import import_module
+ 
+ from . import credentials, errors, util
+ from .util import properties
+@@ -186,17 +186,11 @@ def _load_plugins():
+ 
+     `initialize_func` is optional, but will be invoked if callable.
+     """
+-    group = 'keyring.backends'
+-    entry_points = entrypoints.get_group_all(group=group)
+-    for ep in entry_points:
+-        try:
+-            log.info('Loading %s', ep.name)
+-            init_func = ep.load()
+-            if callable(init_func):
+-                init_func()
+-        except Exception:
+-            log.exception("Error initializing plugin %s." % ep)
+-
++    import_module('keyring.backends.Windows'),
++    import_module('keyring.backends.OS_X'),
++    import_module('keyring.backends.SecretService'),
++    import_module('keyring.backends.kwallet'),
++    import_module('keyring.backends.chainer'),
+ 
+ @util.once
+ def get_all_keyring():
